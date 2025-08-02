@@ -1,129 +1,59 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+	import { session } from '$lib/stores/session';
+	import { supabase } from '$lib/supabase/supabaseClient';
+	import { goto } from '$app/navigation';
+
+	export const userName = 'Usuario';
+	export let workspaceName = 'Kaliv';
+	let menuOpen = false;
+
+	const logout = async () => {
+		await supabase.auth.signOut();
+		goto('/');
+	};
 </script>
 
-<header>
-	<div class="corner">
-		<a href="https://svelte.dev/docs/kit">
-			<img src={logo} alt="SvelteKit" />
-		</a>
+<header class="sticky top-0 z-50 bg-white shadow-md">
+	<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 font-[Poppins] sm:px-6">
+		<h1 class="text-xl font-bold text-[#5A0BBA]">{workspaceName}</h1>
+
+		<!-- Desktop nav -->
+		<nav class="hidden items-center space-x-6 md:flex">
+			<a href="/dashboard" class="font-medium text-gray-700 transition hover:text-[#5A0BBA]"
+				>Inicio</a
+			>
+			<a href="/cobranza" class="font-medium text-gray-700 transition hover:text-[#5A0BBA]"
+				>Cobranza</a
+			>
+			<a href="/clientes" class="font-medium text-gray-700 transition hover:text-[#5A0BBA]"
+				>Clientes</a
+			>
+			<a href="/configuracion" class="font-medium text-gray-700 transition hover:text-[#5A0BBA]"
+				>Configuración</a
+			>
+			{#if $session}
+				<a href="/logout" class="font-medium text-gray-700 transition hover:text-[#5A0BBA]">
+					Cerrar sesión
+				</a>
+			{/if}
+		</nav>
+
+		<!-- Mobile toggle -->
+		<button class="text-2xl text-[#5A0BBA] md:hidden" on:click={() => (menuOpen = !menuOpen)}>
+			☰
+		</button>
 	</div>
 
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">About</a>
-			</li>
-			<li aria-current={page.url.pathname.startsWith('/sverdle') ? 'page' : undefined}>
-				<a href="/sverdle">Sverdle</a>
-			</li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
-
-	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
-	</div>
+	<!-- Mobile menu -->
+	{#if menuOpen}
+		<div class="space-y-3 px-4 pb-4 font-[Poppins] sm:px-6 md:hidden">
+			<a href="/dashboard" class="block text-gray-700 hover:text-[#5A0BBA]">Inicio</a>
+			<a href="/cobranza" class="block text-gray-700 hover:text-[#5A0BBA]">Cobranza</a>
+			<a href="/clientes" class="block text-gray-700 hover:text-[#5A0BBA]">Clientes</a>
+			<a href="/configuracion" class="block text-gray-700 hover:text-[#5A0BBA]">Configuración</a>
+			<button on:click={logout} class="block w-full pt-2 text-left text-[#5A0BBA] hover:underline"
+				>Cerrar sesión</button
+			>
+		</div>
+	{/if}
 </header>
-
-<style>
-	header {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.corner {
-		width: 3em;
-		height: 3em;
-	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
-	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
-	}
-
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 0.5rem;
-		color: var(--color-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
-
-	a:hover {
-		color: var(--color-theme-1);
-	}
-</style>

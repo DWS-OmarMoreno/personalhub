@@ -1,57 +1,54 @@
+<!-- /src/routes/+layout.svelte -->
 <script lang="ts">
-	import Header from './Header.svelte';
-	import '../app.css';
-	import { page } from '$app/state';
+  import Header from './Header.svelte';
+  import '../app.css';
+  import { page } from '$app/stores';
 
-	let { children } = $props();
+  export let data: { session: any; workspaceName?: string };
 </script>
 
-<div class="app">
-	{#if page.url.pathname !== '/'}
-		<Header />
-	{/if}
+<div class="kaliv-layout">
+  {#if $page.url.pathname !== '/'}
+    <Header workspaceName={data.workspaceName} />
+  {/if}
 
-	<main>
-		{@render children()}
-	</main>
+  <main class="kaliv-main">
+    <slot />
+  </main>
 
-	<footer>
-		<p>© 2025 Kaliv. Todos los derechos reservados.</p>
-	</footer>
+  <footer class="kaliv-footer">
+    <p>© 2025 <span class="text-[#5A0BBA] font-semibold">Kaliv</span>. Todos los derechos reservados.</p>
+  </footer>
 </div>
 
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
+  .kaliv-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-bg-1);
+  }
 
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-	}
+  .kaliv-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    width: 100%;
+  }
 
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
+  .kaliv-footer {
+    background-color: var(--color-bg-0);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    border-top: 1px solid #e5e7eb;
+  }
 
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
+  @media (min-width: 1024px) {
+    .kaliv-main {
+      padding: 2rem 3rem;
+    }
+  }
 </style>
